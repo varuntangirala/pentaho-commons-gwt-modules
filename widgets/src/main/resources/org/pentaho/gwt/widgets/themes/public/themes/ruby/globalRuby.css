@@ -102,9 +102,9 @@
   /* V-padding should be 11px. With a line-height of 17px, height equals 30px, like the normal input */
   --input-padding-v: calc(1em * 5.5/14);
   --input-outer-height: calc(
-      2 * var(--input-border-width) +
-      2 * var(--input-padding-v) +
-      1em * var(--typ-body-line-height-px) / var(--typ-body-font-size-px));
+          2 * var(--input-border-width) +
+          2 * var(--input-padding-v) +
+          1em * var(--typ-body-line-height-px) / var(--typ-body-font-size-px));
 
   /* Icon size to resize with text zoom  */
   --icon-height-root: 22;
@@ -136,13 +136,13 @@ html.bootstrap body {
 
 :focus-visible,
 
-/* Increase specificity to override Widgets.css focus rule (> 0-2-1) */
+  /* Increase specificity to override Widgets.css focus rule (> 0-2-1) */
 input:focus-visible:focus-visible:focus-visible,
 
-/* Increase specif. to override bootstrap-namespaced.css (> 0-2-1) */
+  /* Increase specif. to override bootstrap-namespaced.css (> 0-2-1) */
 .bootstrap select:focus-visible:focus-visible,
 
-/* Increase specif. to override bootstrap-namespaced.css (> 0-3-1) */
+  /* Increase specif. to override bootstrap-namespaced.css (> 0-3-1) */
 .bootstrap input:focus-visible:focus-visible:focus-visible  {
   outline: var(--focus-ring);
   outline-offset: var(--focus-ring-offset);
@@ -232,6 +232,7 @@ input[type='radio'] {
 
 input[type='text'],
 textarea,
+textarea.gwt-TextArea,
 .bootstrap .pentaho-dialog input[type='text'] {
   border: var(--input-border-width) solid #CCC;
   padding: 0 10px;
@@ -1170,6 +1171,17 @@ div#FilterPanel div.pentaho-toggle-button-up button {
   align-self: center;
 }
 
+/* Do not flex vertically / stretch horizontally */
+:where(.responsive.pentaho-xul-gwt) .vbox > * > * > * > * > :where(button, .pentaho-button, .pentaho-button.disabled) {
+  --flex-item: none;
+  align-self: start;
+}
+/* Do not stretch vertically / flex horizontally */
+:where(.responsive.pentaho-xul-gwt) .hbox > * > * > * > * > :where(button, .pentaho-button, .pentaho-button.disabled) {
+  --flex-item: 0 1 auto;
+  align-self: center;
+}
+
 /* Ignore the cross size of items which are flex containers or which can flex in the cross axis */
 :where(.responsive.pentaho-xul-gwt) .hbox > * > * > * > * > :where(.flex-row, .flex-column, .flex-item-v) {
   height: auto !important;
@@ -1298,6 +1310,11 @@ div#FilterPanel div.pentaho-toggle-button-up button {
 :where(.responsive) fieldset.xul-fieldset {
   padding: var(--layout-gap-v) var(--layout-gap-h);
   min-width: 0;
+}
+
+:where(.responsive.pentaho-xul-gwt) .xul-textbox.gwt-TextArea {
+  flex: auto;
+  height: auto !important;
 }
 /* endregion XUL/GWT Classes */
 
@@ -1621,17 +1638,17 @@ For IE 9 and IE10, need to add padding to the bottom of some dialogs generated w
      Instead, its min-width is respected, causing GS margins to eventually reach 0.
    */
   max-width: clamp(
-      var(--dialog-min-width),
-      calc(100vw - 2 * var(--dialog-ds-min-margin-h)),
-      var(--dialog-max-width));
+          var(--dialog-min-width),
+          calc(100vw - 2 * var(--dialog-ds-min-margin-h)),
+          var(--dialog-max-width));
 
   /* Dialog cannot grow taller than the viewport. Show outer V scrollbar, instead. */
   max-height: min(
-      clamp(
-          var(--dialog-min-height),
-          calc(100vh - 2 * var(--dialog-ds-min-margin-v)),
-          var(--dialog-max-height)),
-      100vh);
+          clamp(
+                  var(--dialog-min-height),
+                  calc(100vh - 2 * var(--dialog-ds-min-margin-v)),
+                  var(--dialog-max-height)),
+          100vh);
 
   padding: 0;
 }
@@ -5790,6 +5807,21 @@ td.tab-spacer-wrapper {
   width: auto !important;
 }
 
+:where(.responsive) :is(.custom-list.list-mode, .custom-list-disabled.list-mode) .pentaho-gwt-FocusPanel {
+  height: auto !important;
+  min-width: 0;
+}
+
+:where(.responsive.pentaho-xul-gwt) :is(.custom-list, .custom-list-disabled) .custom-list-scroll-panel {
+  width: auto !important;
+  height: auto !important;
+}
+
+:where(.responsive.pentaho-xul-gwt) :is(.custom-list, .custom-list-disabled) .custom-list-scroll-panel > * {
+  display: contents;
+  flex: inherit;
+}
+
 /* .custom-list-drop-grid */
 :where(.responsive) :is(.custom-list, .custom-list-disabled) .custom-list-drop-grid {
   width: 0 !important;
@@ -6075,6 +6107,15 @@ div.prompt-panel .pentaho-toggle-button-container > DIV {
 #queryDeckPanel .xul-label {
   line-height: 28px;
   margin-right: 3px;
+}
+
+:is(#queryBox,#connectionBox) {
+  min-width: 0;
+}
+
+#query {
+  min-height: 6em;
+  max-height: 27em;
 }
 
 #encodingTypeMenuList .custom-list-textbox {
@@ -7680,7 +7721,7 @@ div.listbox .pentaho-listbox {
   background-image: url(images/bg_steps_2.png);
   background-repeat: no-repeat;
   background-origin: border-box;
-  background-position: right -2px bottom;
+  background-position: right bottom;
   background-size: 100% auto;
 
   opacity: 0.5;
@@ -8998,6 +9039,9 @@ button#preview:active {
   padding: 0;
   line-height: 28px;
   margin-left: 10px;
+  min-width: 0;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
 }
 
 button#preview:hover,
